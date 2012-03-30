@@ -1,7 +1,7 @@
 CC=gcc
-CFLAGS=-O2 -funroll-loops -c $(pkg-config allegro-5.0 --cflags)
+CFLAGS=-Wall -O2 -funroll-loops -c $(pkg-config allegro-5.0 allegro_primitives-5.0 --cflags)
 LDFLAGS=-O2
-LDLIBS=-lm `pkg-config allegro-5.0 --libs`
+LDLIBS=-lm `pkg-config allegro-5.0 allegro_primitives-5.0 --libs`
 SOURCES=main.c game.c
 HEADERS=game.h
 OBJECTS=$(addsuffix .o, $(basename ${SOURCES}))
