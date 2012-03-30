@@ -1,0 +1,12 @@
+start_x start_y
+end_x end_y
+num_prizes
+prizes
+x y 	...
+map_w map_h
+	# X - wall
+	# S - 1
+	# A - 4
+	# R - 10
+	# P - 20
+line	...
