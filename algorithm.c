@@ -1,5 +1,6 @@
 
 #include<stdlib.h>
+#include<stdio.h>
 
 #include "heap.h"
 #include "game.h"
@@ -22,7 +23,10 @@ int compare_path_cost(const void *a, const void *b)
 int a_star_search(int init[2], int goal[2])
 {
 	/* current position variable */
-	PathCost *curr = create_path_cost(init, 0);
+	PathCost *curr = (PathCost*)malloc(sizeof(PathCost));
+	curr->pos[0] = init[0];
+	curr->pos[1] = init[1];
+	curr->cost = curr->distance = 0;
 
 	/* pointer to map_size */
 	int *map_size = G.gi.map_size, *mapw = G.gi.mapw;

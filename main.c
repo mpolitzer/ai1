@@ -4,6 +4,7 @@
 #include <ctype.h>
 
 #include "game.h"
+#include "algorithm.h"
 
 struct game G;
 
@@ -111,6 +112,9 @@ int main(int argc, const char *argv[])
 {
 	read_map();
 	print_map();
+
+	printf("Distance: %d\n", a_star_search(G.gi.start, G.gi.end));
+
 #if defined(ALLEGRO)
 	gfx_init(600, 600, 60);
 	gfx_step();
