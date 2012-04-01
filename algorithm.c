@@ -88,17 +88,26 @@ int a_star_search(int init[2], int goal[2])
 				path = _map[map_index];
 
 				/* update cost */
-				if(path->cost > c) path->cost = c;
+				if(path->cost > c) 
+				{
+					path->cost = c;
+
+					/* BUG: se o PathCost já estiver na heap vai dar merda!!! */
+					/* Talvez seja melhor usar lista de adjacencia mesmo... */
+
+					/* insert updated path in heap */
+					heap_insere(heap, path);
+				}
 			}
 			else 
 			{
 				path = create_path_cost(new_pos, c, d);
 
 				_map[map_index] = path;
-			}
 
-			/* insert created/updated path in heap */
-			heap_insere(heap, path);
+				/* insert created path in heap */
+				heap_insere(heap, path);
+			}
 		}
 
 		/* pop next position from heap */
