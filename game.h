@@ -17,12 +17,14 @@ struct game_info {
 };
 
 struct game {
-	ALLEGRO_DISPLAY *display;
 	int w, h;
+	struct game_info gi;
+#if defined(ALLEGRO)
+	ALLEGRO_DISPLAY *display;
 
 	ALLEGRO_TIMER *tick;
 	ALLEGRO_EVENT_QUEUE *ev;
-	struct game_info gi;
+#endif
 };
 
 extern struct game G;

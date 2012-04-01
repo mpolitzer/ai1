@@ -1,16 +1,22 @@
 CC=gcc
-CFLAGS=-Wall -O2 -funroll-loops -c $(pkg-config allegro-5.0 allegro_primitives-5.0 --cflags)
+
+CFLAGS=-Wall -O2 -funroll-loops -c
 LDFLAGS=-O2
-LDLIBS=-lm `pkg-config allegro-5.0 allegro_primitives-5.0 --libs`
-SOURCES=main.c game.c
+LDLIBS=-lm
+SOURCES=main.c
 HEADERS=game.h
+
+ifeq ($(ALLEGRO),1)
+SOURCES+=game.c
+CFLAGS+=-DALLEGRO $(pkg-config allegro-5.0 allegro_primitives-5.0 --cflags)
+LDLIBS+=`pkg-config allegro-5.0 allegro_primitives-5.0 --libs`
+endif
+
 OBJECTS=$(addsuffix .o, $(basename ${SOURCES}))
 EXECUTABLE=main
+EXECUTABLE_allegro=main
 
 all: $(EXECUTABLE)
-
-zip: Makefile $(SOURCES) $(HEADERS)
-	zip -r mypackage.zip $^
 
 $(EXECUTABLE): $(OBJECTS)
 
