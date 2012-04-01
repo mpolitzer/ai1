@@ -1,8 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
+#if defined(ALLEGRO)
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
+#endif
 
 struct game_info {
 	int start[2];
@@ -29,9 +31,11 @@ struct game {
 
 extern struct game G;
 
-void game_init(int w, int h, int fps);
-void game_step(void);
-void game_loop(void);
-void game_end(void);
+#if defined(ALLEGRO)
+void gfx_init(int w, int h, int fps);
+void gfx_step(void);
+void gfx_loop(void);
+void gfx_end(void);
+#endif
 
 #endif /* GAME_H */

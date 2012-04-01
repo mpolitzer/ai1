@@ -112,9 +112,9 @@ int main(int argc, const char *argv[])
 	read_map();
 	print_map();
 #if defined(ALLEGRO)
-	game_init(600, 600, 60);
-	game_loop();
-	game_end();
+	gfx_init(600, 600, 60);
+	gfx_step();
+	gfx_end();
 #endif
 	return 0;
 }

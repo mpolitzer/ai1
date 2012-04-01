@@ -7,14 +7,13 @@ SOURCES=main.c
 HEADERS=game.h
 
 ifeq ($(ALLEGRO),1)
-SOURCES+=game.c
+SOURCES+=gfx.c
 CFLAGS+=-DALLEGRO $(pkg-config allegro-5.0 allegro_primitives-5.0 --cflags)
 LDLIBS+=`pkg-config allegro-5.0 allegro_primitives-5.0 --libs`
 endif
 
 OBJECTS=$(addsuffix .o, $(basename ${SOURCES}))
 EXECUTABLE=main
-EXECUTABLE_allegro=main
 
 all: $(EXECUTABLE)
 

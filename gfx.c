@@ -20,7 +20,7 @@ void _die(int error, char* filename, int line, const char* format, ...)
 	exit(error);
 }
 
-void game_init(int w, int h, int fps)
+void gfx_init(int w, int h, int fps)
 {
 	if (!al_init())
 		die(1, "can't init allegro\n");
@@ -44,7 +44,7 @@ void game_init(int w, int h, int fps)
 	al_start_timer(G.tick);
 }
 
-void game_render(void)
+void gfx_render(void)
 {
 	ALLEGRO_COLOR colors[] = {
 		al_map_rgb(0, 0, 0),		/* x */
@@ -91,17 +91,14 @@ void game_render(void)
 	al_flip_display();
 }
 
-void game_loop(void)
+void gfx_step(void)
 {
-	int done = 0;
-	while (!done){
-		ALLEGRO_EVENT ev;
-		al_wait_for_event(G.ev, &ev);
-		game_render();
-	}
+	ALLEGRO_EVENT ev;
+	al_wait_for_event(G.ev, &ev);
+	gfx_render();
 }
 
-void game_end(void)
+void gfx_end(void)
 {
 	al_destroy_display(G.display);
 	al_destroy_timer(G.tick);
