@@ -15,9 +15,9 @@ typedef struct path_cost
 int compare_path_cost(const void *a, const void *b)
 {
 	PathCost *A = (PathCost*)a;
-	PathCost *B = (PathCost*)B;
+	PathCost *B = (PathCost*)b;
 
-	return A->cost - B->cost;
+	return B->cost - A->cost;
 }
 
 int a_star_search(int init[2], int goal[2])
