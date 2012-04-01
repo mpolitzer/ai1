@@ -8,6 +8,7 @@ typedef struct path_cost
 {
 	int pos[2];
 	int cost;
+	int distance;
 } PathCost;
 
 int compare_path_cost(const void *a, const void *b)
@@ -18,13 +19,14 @@ int compare_path_cost(const void *a, const void *b)
 	return A->cost - B->cost;
 }
 
-PathCost* create_path_cost(int pos[], int cost)
+PathCost* create_path_cost(int pos[], int cost, int distance)
 {
 	PathCost* path = (PathCost*)malloc(sizeof(PathCost));
 
 	path->pos[0] = pos[0];
 	path->pos[1] = pos[1];
 	path->cost = cost;
+	path->distance = distance;
 
 	return path;
 }
@@ -59,7 +61,7 @@ int a_star_search(int init[2], int goal[2])
 		for(i = 0; i < 4; i++)
 		{
 			PathCost *path;
-			int h, c;
+			int h, c, d;
 
 			/* look to the neighbors */
 			int new_pos[2];
@@ -76,8 +78,9 @@ int a_star_search(int init[2], int goal[2])
 			if(mapw[map_index] == -1) continue;
 
 			/* calc distance total cost and measure distance using heuristic */
-			c = curr->cost + mapw[map_index];
+			d = curr->distance + mapw[map_index];
 			h = heuristic(new_pos, goal);
+			c = curr->cost + mapw[map_index] + h;
 
 			/* check if that path cost already exists */
 			if(_map[map_index])
@@ -85,11 +88,11 @@ int a_star_search(int init[2], int goal[2])
 				path = _map[map_index];
 
 				/* update cost */
-				if(path->cost > h+c) path->cost = h+c;
+				if(path->cost > c) path->cost = c;
 			}
 			else 
 			{
-				path = create_path_cost(new_pos, h+c);
+				path = create_path_cost(new_pos, c, d);
 
 				_map[map_index] = path;
 			}
@@ -98,18 +101,22 @@ int a_star_search(int init[2], int goal[2])
 			heap_insere(heap, path);
 		}
 
-		free(curr);
-
 		/* pop next position from heap */
 		curr = heap_remove(heap);
 	}
 
-	if(curr) distance = curr->cost;
+	if(curr) distance = curr->distance;
 	else distance = -1;
 
-	heap_libera(heap, 1);
+	heap_libera(heap, 0);
+	for(i = 0; i < map_size[0]*map_size[1]; i++)
+	{
+		if(_map[i]) 
+		{
+			free(_map[i]);
+		}
+	}
 	free(_map);
-	free(curr);
 
 	return distance;
 }
