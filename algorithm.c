@@ -19,23 +19,6 @@ int compare_path_cost(const void *a, const void *b)
 	return A->cost - B->cost;
 }
 
-PathCost* create_path_cost(int pos[], int cost, int distance)
-{
-	PathCost* path = (PathCost*)malloc(sizeof(PathCost));
-
-	path->pos[0] = pos[0];
-	path->pos[1] = pos[1];
-	path->cost = cost;
-	path->distance = distance;
-
-	return path;
-}
-
-int heuristic(int pos1[], int pos2[])
-{
-	return abs(pos1[0]-pos2[0]) + abs(pos1[1]-pos2[1]); 
-}
-
 int a_star_search(int init[2], int goal[2])
 {
 	/* current position variable */
@@ -67,7 +50,6 @@ int a_star_search(int init[2], int goal[2])
 			int new_pos[2];
 			new_pos[0] = curr->pos[0] + dir[i][0];
 			new_pos[1] = curr->pos[1] + dir[i][1];
-
 			map_index = new_pos[0] + new_pos[1] * map_size[0];
 
 			/* skip invalid positions */
@@ -77,10 +59,14 @@ int a_star_search(int init[2], int goal[2])
 			/* this way has a wall */
 			if(mapw[map_index] == -1) continue;
 
-			/* calc distance total cost and measure distance using heuristic */
+			/* calculating total distance */
 			d = curr->distance + mapw[map_index];
-			h = heuristic(new_pos, goal);
-			c = curr->cost + mapw[map_index] + h;
+
+			/* heuristic definition - (manhattan distance) */
+			h = abs(new_pos[0]-goal[0]) + abs(new_pos[1]-goal[1]);
+
+			/* final cost = total distance + heuristic value */
+			c = d + h;
 
 			/* check if that path cost already exists */
 			if(_map[map_index])
@@ -101,7 +87,13 @@ int a_star_search(int init[2], int goal[2])
 			}
 			else 
 			{
-				path = create_path_cost(new_pos, c, d);
+				/* creating struct path_cost */
+				path = (PathCost*)malloc(sizeof(PathCost));
+
+				path->pos[0] = new_pos[0];
+				path->pos[1] = new_pos[1];
+				path->cost = c;
+				path->distance = d;
 
 				_map[map_index] = path;
 
