@@ -40,7 +40,7 @@ int a_star_search(int init[2], int goal[2])
 	PathCost *curr = create_path_cost(init, 0);
 
 	/* pointer to map_size */
-	int *map_size = G.gi.map_size;
+	int *map_size = G.gi.map_size, *mapw = G.gi.mapw;
 
 	/* heap definition */
 	Heap *heap = heap_cria(map_size[0]*map_size[1], compare_path_cost);
@@ -72,8 +72,11 @@ int a_star_search(int init[2], int goal[2])
 			if(new_pos[0] < 0 || new_pos[0] >= map_size[0]) continue;
 			if(new_pos[1] < 0 || new_pos[1] >= map_size[1]) continue;
 
+			/* this way has a wall */
+			if(mapw[map_index] == -1) continue;
+
 			/* calc distance total cost and measure distance using heuristic */
-			c = curr->cost + G.gi.mapw[map_index];
+			c = curr->cost + mapw[map_index];
 			h = heuristic(new_pos, goal);
 
 			/* check if that path cost already exists */
@@ -81,13 +84,21 @@ int a_star_search(int init[2], int goal[2])
 			{
 				path = _map[map_index];
 
+				/* update cost */
 				if(path->cost > h+c) path->cost = h+c;
 			}
-			else path = create_path_cost(new_pos, h+c);
+			else 
+			{
+				path = create_path_cost(new_pos, h+c);
+
+				_map[map_index] = path;
+			}
 
 			/* insert created/updated path in heap */
 			heap_insere(heap, path);
 		}
+
+		free(curr);
 
 		/* pop next position from heap */
 		curr = heap_remove(heap);
