@@ -1,7 +1,14 @@
-
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
-int a_star_search(int init[2], int goal[2]);
+typedef struct path_cost
+{
+	int pos[2];
+	int cost;
+	int distance;
+	struct path_cost *prev;
+} PathCost;
+
+PathCost *a_star_search(int init[2], int goal[2], int *distance);
 
 #endif /* ALGORITHM_H */

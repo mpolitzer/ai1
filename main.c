@@ -110,10 +110,18 @@ void print_map(void)
 
 int main(int argc, const char *argv[])
 {
-	read_map();
-	print_map();
+	PathCost *goal, *ptr;
+	int distance;
 
-	printf("Distance: %d\n", a_star_search(G.gi.start, G.gi.end));
+	read_map();
+	// print_map();
+
+	goal = a_star_search(G.gi.start, G.gi.end, &distance);
+	printf("Distance: %d\n", distance);
+
+	for (ptr=goal; ptr; ptr = ptr->prev) {
+		printf("(%d,%d)\n", ptr->pos[0], ptr->pos[1]);
+	}
 
 #if defined(ALLEGRO)
 	gfx_init(600, 600, 60);
