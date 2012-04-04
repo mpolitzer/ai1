@@ -14,6 +14,19 @@ int compare_path_cost(const void *a, const void *b)
 	return B->cost - A->cost;
 }
 
+static inline PathCost *create_path_cost(int pos[], int cost, int distance, PathCost *previous)
+{
+	PathCost *path = (PathCost*) malloc(sizeof(PathCost));
+
+	path->pos[0] = pos[0];
+	path->pos[1] = pos[1];
+	path->cost = cost;
+	path->distance = distance;
+	path->prev = previous;
+
+	return path;
+}
+
 static inline int manhattan_distance(int begin[2], int end[2])
 {
 	return abs(begin[0]-end[0]) + abs(begin[1]-end[1]);
@@ -30,11 +43,7 @@ static inline int pos_isvalid(int pos[2], int map_size[2])
 PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 {
 	/* current position variable */
-	PathCost *aux, *curr = (PathCost*)malloc(sizeof(PathCost));
-	curr->pos[0] = init[0];
-	curr->pos[1] = init[1];
-	curr->cost = curr->distance = 0;
-	curr->prev = NULL;
+	PathCost *aux, *curr = create_path_cost(init, 0, 0, NULL);
 
 	/* pointer to map_size */
 	int *map_size = G.gi.map_size, *mapw = G.gi.mapw;
@@ -79,6 +88,8 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 				/* update cost */
 				if(path->cost > c) {
 					path->cost = c;
+					path->distance = d;
+					path->prev = curr;
 
 					/* BUG: se o PathCost já estiver na heap vai dar merda!!! */
 					/* Talvez seja melhor usar lista de adjacencia mesmo... */
@@ -90,13 +101,7 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 				PathCost *path;
 
 				/* creating struct path_cost */
-				path = (PathCost*)malloc(sizeof(PathCost));
-
-				path->pos[0] = new_pos[0];
-				path->pos[1] = new_pos[1];
-				path->cost = c;
-				path->distance = d;
-				path->prev = curr;
+				path = create_path_cost(new_pos, c, d, curr);
 
 				_map[map_index] = path;
 
