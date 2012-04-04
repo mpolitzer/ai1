@@ -30,7 +30,7 @@ static inline int pos_isvalid(int pos[2], int map_size[2])
 PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 {
 	/* current position variable */
-	PathCost *curr = (PathCost*)malloc(sizeof(PathCost));
+	PathCost *aux, *curr = (PathCost*)malloc(sizeof(PathCost));
 	curr->pos[0] = init[0];
 	curr->pos[1] = init[1];
 	curr->cost = curr->distance = 0;
@@ -120,17 +120,19 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 
 	heap_libera(heap, 0);
 
-#if 0	/* leeking memory for now... */
+	/* steal the nodes we'll need from _map */
+	for(aux=curr; aux; aux=aux->prev) {
+		_map[aux->pos[0] + aux->pos[1] * map_size[0]] = NULL;
+	}
+
 	for(i = 0; i < map_size[0]*map_size[1]; i++)
 	{
-		if(_map[i]) 
+		if(_map[i])
 		{
 			free(_map[i]);
 		}
 	}
 	free(_map);
-#endif
-
 	*_distance = distance;
 	return curr;
 }
