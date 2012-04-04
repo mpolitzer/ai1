@@ -42,7 +42,7 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 	/* heap definition */
 	Heap *heap = heap_cria(map_size[0]*map_size[1], compare_path_cost);
 
-	/* map of path_cost */	
+	/* map of path_cost */
 	PathCost **_map = (PathCost**) calloc(map_size[0]*map_size[1], sizeof(PathCost*));
 
 	/* directional vector */
@@ -51,10 +51,8 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 	/* other variables */
 	int i, distance, map_index;
 
-	while(curr && (curr->pos[0] != goal[0] || curr->pos[1] != goal[1]))
-	{
-		for(i = 0; i < 4; i++)
-		{
+	while(curr && (curr->pos[0] != goal[0] || curr->pos[1] != goal[1])) {
+		for(i = 0; i < 4; i++) {
 			int c, d;
 
 			/* look to the neighbors */
@@ -74,14 +72,12 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 			c = d + manhattan_distance(new_pos, goal);
 
 			/* check if that path cost already exists */
-			if(_map[map_index])
-			{
+			if(_map[map_index]) {
 				PathCost *path;
 				path = _map[map_index];
 
 				/* update cost */
-				if(path->cost > c) 
-				{
+				if(path->cost > c) {
 					path->cost = c;
 
 					/* BUG: se o PathCost já estiver na heap vai dar merda!!! */
@@ -90,9 +86,7 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 					/* insert updated path in heap */
 					heap_insere(heap, path);
 				}
-			}
-			else 
-			{
+			} else {
 				PathCost *path;
 
 				/* creating struct path_cost */
@@ -125,10 +119,8 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 		_map[aux->pos[0] + aux->pos[1] * map_size[0]] = NULL;
 	}
 
-	for(i = 0; i < map_size[0]*map_size[1]; i++)
-	{
-		if(_map[i])
-		{
+	for(i = 0; i < map_size[0]*map_size[1]; i++) {
+		if(_map[i]) {
 			free(_map[i]);
 		}
 	}

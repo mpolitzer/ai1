@@ -18,8 +18,7 @@ int read_map(void)
 
 	G.gi.prizes = malloc(sizeof(int) * 2 * G.gi.num_prizes);
 
-	for (i = 0; i < G.gi.num_prizes; i++) 
-	{
+	for (i = 0; i < G.gi.num_prizes; i++) {
 		int x, y;
 		assert(scanf(" %d %d", &x, &y) == 2);
 
@@ -34,23 +33,19 @@ int read_map(void)
 	G.gi.mapw = malloc(sizeof(int) * G.gi.map_size[0] * G.gi.map_size[1]);
 
 	/* read tile values */
-	for (i = 0; i < G.gi.map_size[0]; i++) 
-	{
-		for (j = 0; j < G.gi.map_size[1]; j++) 
-		{
+	for (i = 0; i < G.gi.map_size[0]; i++) {
+		for (j = 0; j < G.gi.map_size[1]; j++) {
 			int map_index = i + j * G.gi.map_size[1];
 			char c;
-			
-			do 
-			{
+
+			do {
 				c = getchar();
-			} 
-			while (!isalnum(c));
+			} while (!isalnum(c));
 
 			c = tolower(c);
 
 			G.gi.map[map_index] = c;
-			switch (c){
+			switch (c) {
 			case 'x':
 				G.gi.mapv[map_index] = 0;
 				G.gi.mapw[map_index] = -1;
@@ -85,22 +80,18 @@ void print_map(void)
 	printf("end (%2d,%2d)\n", G.gi.end[0], G.gi.end[1]);
 	printf("num prizes %2d\n", G.gi.num_prizes);
 
-	for (i = 0; i < G.gi.num_prizes; i++)
-	{
+	for (i = 0; i < G.gi.num_prizes; i++) {
 		printf("\t(%2d,%2d)\n", G.gi.prizes[i][0], G.gi.prizes[i][1]);
 	}
 	printf("map_size (%2d,%2d)\n", G.gi.map_size[0], G.gi.map_size[1]);
 
-	for (i = 0; i < G.gi.map_size[0]; i++)
-	{
-		for (j = 0; j < G.gi.map_size[1]; j++)
-		{
+	for (i = 0; i < G.gi.map_size[0]; i++) {
+		for (j = 0; j < G.gi.map_size[1]; j++) {
 			int map_index = i + j * G.gi.map_size[1];
 			printf("%c", G.gi.map[map_index]);
 		}
 		printf(" |");
-		for (j = 0; j < G.gi.map_size[1]; j++)
-		{
+		for (j = 0; j < G.gi.map_size[1]; j++) {
 			int map_index = i + j * G.gi.map_size[1];
 			printf("%3d", G.gi.mapv[map_index]);
 		}

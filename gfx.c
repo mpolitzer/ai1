@@ -61,8 +61,8 @@ void gfx_render(void)
 		for (j=0; j<G.gi.map_size[1]; j++) {
 			int map_index = i + j * G.gi.map_size[1];
 			al_draw_filled_rectangle(scale*i, scale*j,
-					scale*(i + 1), scale*(j + 1),
-					colors[G.gi.mapv[map_index]]);
+			                         scale*(i + 1), scale*(j + 1),
+			                         colors[G.gi.mapv[map_index]]);
 		}
 	}
 
@@ -71,23 +71,23 @@ void gfx_render(void)
 		float x = G.gi.prizes[i][0] + 0.5;
 		float y = G.gi.prizes[i][1] + 0.5;
 		al_draw_filled_triangle(scale*(x), scale*(y-0.3),
-				scale*(x+0.3), scale*(y+0.3),
-				scale*(x-0.3), scale*(y+0.3),
-				al_map_rgb(255, 255, 0));
+		                        scale*(x+0.3), scale*(y+0.3),
+		                        scale*(x-0.3), scale*(y+0.3),
+		                        al_map_rgb(255, 255, 0));
 	}
 
 	/* start */
 	al_draw_filled_circle((float)scale * (G.gi.start[0]+0.5),
-			(float)scale * (G.gi.start[1]+0.5), scale/2,
-			al_map_rgb(0, 255, 0));
+	                      (float)scale * (G.gi.start[1]+0.5), scale/2,
+	                      al_map_rgb(0, 255, 0));
 	/* end */
 	al_draw_filled_circle((float)scale * (G.gi.end[0]+0.5),
-			(float)scale * (G.gi.end[1]+0.5), scale/2,
-			al_map_rgb(255, 0, 0));
+	                      (float)scale * (G.gi.end[1]+0.5), scale/2,
+	                      al_map_rgb(255, 0, 0));
 	/* player */
 	al_draw_filled_circle((float)scale * (G.gi.cur[0]+0.5),
-			(float)scale * (G.gi.cur[1]+0.5), scale/2,
-			al_map_rgb(0, 0, 255));
+	                      (float)scale * (G.gi.cur[1]+0.5), scale/2,
+	                      al_map_rgb(0, 0, 255));
 	al_flip_display();
 }
 
