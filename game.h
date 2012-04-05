@@ -31,6 +31,8 @@ struct game {
 
 extern struct game G;
 
+void game_read(void);
+void game_print(void);
 #if defined(ALLEGRO)
 void gfx_init(int w, int h, int fps);
 void gfx_step(void);
