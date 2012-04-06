@@ -14,7 +14,7 @@ int compare_path_cost(const void *a, const void *b)
 	return B->cost - A->cost;
 }
 
-static inline PathCost *create_path_cost(int pos[], int cost, int distance, PathCost *previous)
+static inline PathCost *create_path_cost(int pos[], float cost, float distance, PathCost *previous)
 {
 	PathCost *path = (PathCost*) malloc(sizeof(PathCost));
 
@@ -40,7 +40,7 @@ static inline int pos_isvalid(int pos[2], int map_size[2])
 	return 1;
 }
 
-PathCost *a_star_search(int init[2], int goal[2], int *_distance)
+PathCost *a_star_search(int init[2], int goal[2], float *_distance)
 {
 	/* current position variable */
 	PathCost *aux, *curr = create_path_cost(init, 0, 0, NULL);
@@ -58,24 +58,28 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 	int dir[4][2] = {{-1,0}, {0, -1}, {1, 0}, {0, 1}};
 
 	/* other variables */
-	int i, distance, map_index;
+	int i, map_index;
+	float distance;
 
 	while(curr && (curr->pos[0] != goal[0] || curr->pos[1] != goal[1])) {
 		for(i = 0; i < 4; i++) {
-			int c, d;
+			float c, d;
 
 			/* look to the neighbors */
 			int new_pos[2];
+			int curr_index;
 			new_pos[0] = curr->pos[0] + dir[i][0];
 			new_pos[1] = curr->pos[1] + dir[i][1];
 			if (!pos_isvalid(new_pos, map_size)) continue;
 
 			map_index = new_pos[0] + new_pos[1] * map_size[0];
+			curr_index = curr->pos[0] + curr->pos[1] * map_size[0];
 			/* this way has a wall */
 			if(mapw[map_index] == -1) continue;
 
 			/* calculating total distance */
-			d = curr->distance + mapw[map_index];
+			d = (float) curr->distance + 0.5*mapw[map_index]
+				+ (float) 0.5*mapw[curr_index];
 
 			/* final cost = total distance + heuristic value */
 			c = d + manhattan_distance(new_pos, goal);

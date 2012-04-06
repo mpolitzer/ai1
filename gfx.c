@@ -47,11 +47,11 @@ void gfx_init(int w, int h, int fps)
 void gfx_render(void)
 {
 	ALLEGRO_COLOR colors[] = {
-		al_map_rgb(0, 0, 0),		/* x */
-		al_map_rgb(0, 128, 128),	/* s */
-		al_map_rgb(128, 128, 128),	/* a */
-		al_map_rgb(128, 128, 128),	/* r */
-		al_map_rgb(128, 128, 128),	/* p */
+		al_map_rgb(  0,  0,  0),	/* x */
+		al_map_rgb(  0,200,  0),	/* p */
+		al_map_rgb(  0,150,  0),	/* r */
+		al_map_rgb(  0,100,  0),	/* a */
+		al_map_rgb(  0, 50,  0),	/* s */
 	};
 	int i, j, scale = MIN(G.w / G.gi.map_size[0], G.h / G.gi.map_size[1]);
 	al_clear_to_color(al_map_rgb(0,0,0));
