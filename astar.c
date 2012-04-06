@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 
-#include "algorithm.h"
+#include "astar.h"
 #include "heap.h"
 #include "game.h"
 
@@ -78,8 +78,8 @@ PathCost *a_star_search(int init[2], int goal[2], float *_distance)
 			if(mapw[map_index] == -1) continue;
 
 			/* calculating total distance */
-			d = (float) curr->distance + 0.5*mapw[map_index]
-				+ (float) 0.5*mapw[curr_index];
+			d = curr->distance + 0.5*mapw[map_index]
+				+ 0.5*mapw[curr_index];
 
 			/* final cost = total distance + heuristic value */
 			c = d + manhattan_distance(new_pos, goal);

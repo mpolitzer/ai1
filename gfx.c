@@ -78,15 +78,15 @@ void gfx_render(void)
 
 	/* start */
 	al_draw_filled_circle((float)scale * (G.gi.start[0]+0.5),
-	                      (float)scale * (G.gi.start[1]+0.5), scale/2,
+	                      (float)scale * (G.gi.start[1]+0.5), scale/3,
 	                      al_map_rgb(0, 255, 0));
 	/* end */
 	al_draw_filled_circle((float)scale * (G.gi.end[0]+0.5),
-	                      (float)scale * (G.gi.end[1]+0.5), scale/2,
+	                      (float)scale * (G.gi.end[1]+0.5), scale/3,
 	                      al_map_rgb(255, 0, 0));
 	/* player */
 	al_draw_filled_circle((float)scale * (G.gi.cur[0]+0.5),
-	                      (float)scale * (G.gi.cur[1]+0.5), scale/2,
+	                      (float)scale * (G.gi.cur[1]+0.5), scale/3,
 	                      al_map_rgb(0, 0, 255));
 	al_flip_display();
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "game.h"
-#include "algorithm.h"
+#include "astar.h"
 
 int main(int argc, const char *argv[])
 {
