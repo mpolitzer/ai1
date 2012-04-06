@@ -37,10 +37,10 @@ int main(int argc, const char *argv[])
 	gfx_end();
 #else
 	for (ptr=goal; ptr->prev; ptr = ptr->prev) {
-		printf("%f (%d,%d)\n", ptr->pos[0], ptr->pos[1]);
+		printf("%f (%d,%d)\n", ptr->cost, ptr->pos[0], ptr->pos[1]);
 	}
 	for (; ptr; ptr = ptr->next) {
-		printf("%f (%d,%d)\n", ptr->pos[0], ptr->pos[1]);
+		printf("%f (%d,%d)\n", ptr->cost, ptr->pos[0], ptr->pos[1]);
 	}
 #endif
 	return 0;
