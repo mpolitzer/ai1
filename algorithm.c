@@ -120,8 +120,12 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 	heap_libera(heap, 0);
 
 	/* steal the nodes we'll need from _map */
-	for(aux=curr; aux; aux=aux->prev) {
+	for(aux=NULL; curr; curr=curr->prev) {
+		curr->next = aux;
+		aux = curr;
 		_map[aux->pos[0] + aux->pos[1] * map_size[0]] = NULL;
+
+
 	}
 
 	for(i = 0; i < map_size[0]*map_size[1]; i++) {
@@ -131,5 +135,5 @@ PathCost *a_star_search(int init[2], int goal[2], int *_distance)
 	}
 	free(_map);
 	*_distance = distance;
-	return curr;
+	return aux;
 }

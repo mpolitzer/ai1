@@ -17,7 +17,12 @@ int main(int argc, const char *argv[])
 #if defined(ALLEGRO)
 	gfx_init(600, 600, 10);
 	while (1) {
-		for (ptr=goal; ptr; ptr = ptr->prev) {
+		for (ptr=goal; ptr->next; ptr = ptr->next) {
+			G.gi.cur[0] = ptr->pos[0];
+			G.gi.cur[1] = ptr->pos[1];
+			gfx_step();
+		}
+		for (; ptr->prev; ptr = ptr->prev) {
 			G.gi.cur[0] = ptr->pos[0];
 			G.gi.cur[1] = ptr->pos[1];
 			gfx_step();
@@ -25,7 +30,10 @@ int main(int argc, const char *argv[])
 	}
 	gfx_end();
 #else
-	for (ptr=goal; ptr; ptr = ptr->prev) {
+	for (ptr=goal; ptr->prev; ptr = ptr->prev) {
+		printf("(%d,%d)\n", ptr->pos[0], ptr->pos[1]);
+	}
+	for (; ptr; ptr = ptr->next) {
 		printf("(%d,%d)\n", ptr->pos[0], ptr->pos[1]);
 	}
 #endif
