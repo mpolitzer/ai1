@@ -27,14 +27,31 @@ void swap_pos(int *pos1, int *pos2)
 	pos2[1] = tmp;
 }
 
+static inline void print_path(int *vet, int sz)
+{
+	int i;
+	for(i = 0; i < sz; i++)
+	{
+		printf("DEBUG: (%d, %d)\n", vet[i*2 + 0], vet[i*2 + 1]);
+	}
+}
+
+static inline int comp_pos(int *pos1, int *pos2)
+{
+	if(pos1[0] != pos2[0]) return 0;
+	if(pos1[1] != pos2[1]) return 0;
+	return 1;
+}
+
 int *inv_vet(int *vet, int sz)
 {
-	int *new_vet = malloc(sizeof(int)*sz);
+	int *new_vet = malloc(sizeof(int)*sz*2);
 	int i;
 
 	for(i = 0; i < sz; i++)
 	{
-		new_vet[sz-i-1] = vet[i];
+		new_vet[2*(sz-i-1) + 0] = vet[2*i + 0];
+		new_vet[2*(sz-i-1) + 1] = vet[2*i + 1];
 	}
 
 	return new_vet;
@@ -53,8 +70,6 @@ void calc_cost_matrix(void)
 
 		node->path = a_star_search(G.gi.start, G.gi.prizes[i], &node->cost, &node->steps);
 
-		/* impossible to get there! */
-		if(node->cost < 0) G.gi.prizes[i][0] = -1;
 	}
 
 	for (i=0; i<G.gi.num_prizes; i++) {
@@ -79,6 +94,7 @@ void calc_cost_matrix(void)
 
 			graph[mkcostidx(0, j+1)].steps = start_graph[i].steps;
 			graph[mkcostidx(j+1, 0)].steps = start_graph[i].steps;
+
 			j++;
 		}
 	}
@@ -129,7 +145,7 @@ int main(int argc, const char *argv[])
 	calc_cost_matrix();
 
 #if defined(ALLEGRO)
-	gfx_init(600, 600, 1);
+	gfx_init(600, 600, 10);
 
 	path = ga_solve_tsp(100000, &distance);
 
@@ -150,8 +166,6 @@ int main(int argc, const char *argv[])
 			{
 				G.gi.cur[0] = node->path[i*2 + 0];
 				G.gi.cur[1] = node->path[i*2 + 1];
-
-				printf("DEBUG: x= %d ; y = %d\n", G.gi.cur[0],G.gi.cur[1]);
 
 				gfx_step();
 			}

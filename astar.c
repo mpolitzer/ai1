@@ -149,10 +149,9 @@ int *a_star_search(int init[2], int goal[2], float *_distance, int *_steps)
 		final_path = malloc(sizeof(int)*2*(curr->steps+1));
 	}
 
-	printf("DEBUG: steps = %d ; final_idx = %d\n", curr->steps, final_idx);
-
 	/* steal the nodes we'll need from _map */
 	for(; curr; curr=curr->prev) {
+
 		final_path[2*final_idx + 0] = curr->pos[0];
 		final_path[2*final_idx + 1] = curr->pos[1];
 		final_idx--;
