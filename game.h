@@ -29,7 +29,10 @@ struct game {
 #endif
 };
 
+#define mkcostidx(x,y) ((x) + (y) * (G.gi.num_prizes+2))
+
 extern struct game G;
+extern float *_cost;
 
 void game_read(void);
 void game_print(void);
