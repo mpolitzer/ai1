@@ -48,6 +48,12 @@ PathCost *a_star_search(int init[2], int goal[2], float *_distance)
 	/* pointer to map_size */
 	int *map_size = G.gi.map_size, *mapw = G.gi.mapw;
 
+	/* if goal is inside a wall */
+	if (mapw[goal[0] + goal[1] * map_size[0]] < 0) {
+		_distance = -1;
+		return NULL;
+	}
+
 	/* heap definition */
 	Heap *heap = heap_cria(map_size[0]*map_size[1], compare_path_cost);
 
