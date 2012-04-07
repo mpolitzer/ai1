@@ -35,6 +35,12 @@ void gfx_init(int w, int h, int fps)
 	if (!(G.tick = al_create_timer(1.0 / fps)))
 		die(4, "invalid fps");
 
+	al_init_font_addon();	// initialize the font addon
+	al_init_ttf_addon();	// initialize the ttf (True Type Font) addon
+
+	G.font = al_load_ttf_font("/usr/share/fonts/corefonts/arial.ttf", 10,0 );
+	assert(G.font);
+	       
 	/* current position is the begining */
 	G.gi.cur[0] = G.gi.start[0];
 	G.gi.cur[1] = G.gi.start[1];
@@ -69,19 +75,31 @@ void gfx_render(void)
 		}
 	}
 
-	/* prize */
+	/* prizes */
 	for (i=0; i<G.gi.num_prizes; i++) {
 		float x = G.gi.prizes[i][0] + 0.5;
 		float y = G.gi.prizes[i][1] + 0.5;
-		al_draw_filled_triangle(scale*(x), scale*(y-0.3),
-		                        scale*(x+0.3), scale*(y+0.3),
-		                        scale*(x-0.3), scale*(y+0.3),
-		                        al_map_rgb(255, 255, 0));
+		char buff[255];
+
+		if (!G.gi.prizes_visited[i])
+			al_draw_filled_triangle(scale*(x), scale*(y-0.3),
+					scale*(x+0.3), scale*(y+0.3),
+					scale*(x-0.3), scale*(y+0.3),
+					al_map_rgb(255, 255, 0));
+		else
+			al_draw_triangle(scale*(x), scale*(y-0.3),
+					scale*(x+0.3), scale*(y+0.3),
+					scale*(x-0.3), scale*(y+0.3),
+					al_map_rgb(255, 255, 0),
+					1.0);
+		sprintf(buff, "%d", i+1);
+		al_draw_text(G.font, al_map_rgb(0,0,0),
+				scale*x, scale*y, ALLEGRO_ALIGN_CENTRE, buff);
 	}
 
 	/* start */
 	al_draw_filled_circle((float)scale * (G.gi.start[0]+0.5),
-	                      (float)scale * (G.gi.start[1]+0.5), scale/3,
+			(float)scale * (G.gi.start[1]+0.5), scale/3,
 	                      al_map_rgb(0, 255, 0));
 	/* end */
 	al_draw_filled_circle((float)scale * (G.gi.end[0]+0.5),

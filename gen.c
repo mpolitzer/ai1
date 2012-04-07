@@ -1,14 +1,15 @@
-#include "game.h"
-#include "gen.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "heap.h"
+#include "game.h"
+#include "gen.h"
+
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 
-#define NUM_ELEMENTS 20
+#define NUM_ELEMENTS 300
 
 typedef struct {
 	int *vet;
@@ -37,17 +38,16 @@ static inline void ga_dump_vet(int *vet, int sz)
 
 static inline void mutation(int *state)
 {
-	int aux;
 	int num_prizes = G.gi.num_prizes;
 	int i = (rand() % num_prizes) + 1;
 	int j = (rand() % num_prizes) + 1;
 
-	/* 10% chance of happening. */
-	if ((rand() % 10)) return;
-
-	aux = state[i];
-	state[i] = state[j];
-	state[j] = aux;
+	/* 0.01 chance of happening. */
+	if ((rand() % 10) == 0) {
+		int aux = state[i];
+		state[i] = state[j];
+		state[j] = aux;
+	}
 }
 
 static inline void recomb(int *son_, int *father1, int *father2)
@@ -126,47 +126,35 @@ static inline void ga_update_cost(ga_state *state)
 	assert(state->cost > 0);
 }
 
+int ga_compare(const void *_v1, const void *_v2)
+{
+	ga_state *v1 = (ga_state *)_v1;
+	ga_state *v2 = (ga_state *)_v2;
+
+	return v1->cost > v2->cost;
+}
+
+static inline void ga_evolve_step(int i)
+{
+	recomb(_elements[NUM_ELEMENTS-i-1].vet,
+			_elements[i].vet,
+			_elements[i+1].vet);
+	ga_update_cost(&_elements[NUM_ELEMENTS-i-1]);
+
+	mutation(_elements[i].vet);
+	ga_update_cost(&_elements[i]);
+
+	mutation(_elements[i+1].vet);
+	ga_update_cost(&_elements[i+1]);
+}
+
 static inline void ga_evolve(void)
 {
-	int son, father1, father2;
-	int i, n;
-	int v[100];
-	double total_cost;
-	float max, min;
-
-	for (total_cost=0, i=0; i < NUM_ELEMENTS; i++) {
-		total_cost += 1.0/_elements[i].cost;
+	int i;
+	qsort(_elements, NUM_ELEMENTS, sizeof(ga_state), ga_compare);
+	for (i = 0; i < NUM_ELEMENTS/3; i++) {
+		ga_evolve_step(i);
 	}
-	for (n=0, max=0, min=10000, i=0; i < NUM_ELEMENTS; i++) {
-		double current = (100 * (1.0/_elements[i].cost)) / total_cost;
-		int k = current;
-#if 0
-		printf("total: %lf current: %lf elem: %f 1/elem: %f\n",
-				total_cost,
-				current,
-				_elements[i].cost,
-				(1.0/_elements[i].cost)
-				);
-#endif
-		min = MIN(min, current);
-		max = MAX(max, current);
-
-		while (k--) {
-			v[n++] = i;
-		}
-	}
-	for (; n<100; n++) {
-		v[n] = min;
-	}
-	father1 = v[rand() % 100];
-	father2 = v[rand() % 100];
-	son = v[rand() % 100];
-
-	recomb(_elements[son].vet,
-			_elements[father1].vet,
-			_elements[father2].vet);
-	mutation(_elements[son].vet);
-	ga_update_cost(&_elements[son]);
 }
 
 int *ga_solve_tsp(int num_iterations, float *cost)
@@ -193,11 +181,5 @@ int *ga_solve_tsp(int num_iterations, float *cost)
 		}
 	}
 	*cost = _elements[min_idx].cost;
-
-	for (i = 0; i < G.gi.num_prizes+2; i++) {
-		printf(" %d", _elements[min_idx].vet[i]);
-	}
-	printf("\n");
-
 	return _elements[min_idx].vet;
 }

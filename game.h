@@ -3,6 +3,7 @@
 
 #if defined(ALLEGRO)
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 #endif
 
@@ -10,6 +11,7 @@ struct game_info {
 	int start[2];
 	int end[2];
 	int cur[2];
+	int *prizes_visited;
 	int num_prizes;
 	int (*prizes)[2];
 	int map_size[2];
@@ -22,6 +24,7 @@ struct game {
 	int w, h;
 	struct game_info gi;
 #if defined(ALLEGRO)
+	ALLEGRO_FONT *font;
 	ALLEGRO_DISPLAY *display;
 
 	ALLEGRO_TIMER *tick;
@@ -39,6 +42,7 @@ typedef struct
 
 #define INF	0x3F3F3F3F
 #define NINF	0xC0C0C0C0
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(*x))
 
 #define mkcostidx(x,y) ((x) + (y) * (G.gi.num_prizes+2))

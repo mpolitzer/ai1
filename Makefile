@@ -8,8 +8,8 @@ HEADERS=game.h astar.h heap.h gen.h
 
 ifeq ($(ALLEGRO),1)
 SOURCES+=gfx.c
-CFLAGS+=-DALLEGRO $(pkg-config allegro-5.0 allegro_primitives-5.0 --cflags)
-LDLIBS+=`pkg-config allegro-5.0 allegro_primitives-5.0 --libs`
+CFLAGS+=-DALLEGRO $(pkg-config allegro_ttf-5.0 allegro_font-5.0 allegro-5.0 allegro_primitives-5.0 --cflags)
+LDLIBS+=`pkg-config allegro-5.0 allegro_ttf-5.0 allegro_font-5.0 allegro_primitives-5.0 --libs`
 endif
 
 OBJECTS=$(addsuffix .o, $(basename ${SOURCES}))

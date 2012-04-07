@@ -75,6 +75,10 @@ void calc_cost_matrix(void)
 	for (i=0; i<G.gi.num_prizes; i++) {
 		if(start_graph[i].cost < 0)
 		{
+			printf("(%d,%d) (%d,%d)\n",
+					G.gi.prizes[i][0], G.gi.prizes[i][1],
+					G.gi.prizes[G.gi.num_prizes-1][0],
+					G.gi.prizes[G.gi.num_prizes-1][1]);
 			swap_pos(G.gi.prizes[i], G.gi.prizes[G.gi.num_prizes-1]);
 			G.gi.num_prizes--;
 			i--;
@@ -136,6 +140,7 @@ int main(int argc, const char *argv[])
 	int *path;
 	int *goal, *ptr;
 	float distance;
+	float min = 100000;
 #endif
 
 	srand(time(NULL));
@@ -145,28 +150,32 @@ int main(int argc, const char *argv[])
 	calc_cost_matrix();
 
 #if defined(ALLEGRO)
-	gfx_init(600, 600, 10);
-
-	path = ga_solve_tsp(100000, &distance);
-
-	for (i = 0; i < G.gi.num_prizes+2; i++) {
-		printf(" %d", path[i]);
-	}
-	printf("\n");
-
-	printf("distance: %f\n", distance);
+	gfx_init(600, 600, 5);
 	while (1) {
 		int j=0;
 
+		path = ga_solve_tsp(10000, &distance);
+		min = MIN(distance, min);
+
+		for (i = 0; i < G.gi.num_prizes+2; i++) {
+			printf(" %d", path[i]);
+		}
+		printf("\n");
+
+		printf("distance: %f %f\n", distance, min);
+
+		memset(G.gi.prizes_visited, 0, sizeof(int) * G.gi.num_prizes+2);
 		for (j=0; j<G.gi.num_prizes+1; j++) {
 			TSP_Node *node = &graph[mkcostidx(path[j], path[j+1])];
 
+			if (path[j] > 0) {
+				G.gi.prizes_visited[path[j]-1] = 1;
+			}
 			goal = node->path;
 			for(i = 0; i < node->steps; i++)
 			{
 				G.gi.cur[0] = node->path[i*2 + 0];
 				G.gi.cur[1] = node->path[i*2 + 1];
-
 				gfx_step();
 			}
 		}

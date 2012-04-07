@@ -15,6 +15,7 @@ void game_read(void)
 	assert(scanf(" %d", &G.gi.num_prizes) == 1);
 
 	G.gi.prizes = malloc(sizeof(int) * 2 * G.gi.num_prizes);
+	G.gi.prizes_visited = malloc(sizeof(int) * G.gi.num_prizes);
 
 	for (i = 0; i < G.gi.num_prizes; i++) {
 		int x, y;
