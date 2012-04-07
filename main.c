@@ -129,7 +129,7 @@ int main(int argc, const char *argv[])
 	calc_cost_matrix();
 
 #if defined(ALLEGRO)
-	gfx_init(600, 600, 3);
+	gfx_init(600, 600, 1);
 
 	path = ga_solve_tsp(100000, &distance);
 
@@ -150,6 +150,8 @@ int main(int argc, const char *argv[])
 			{
 				G.gi.cur[0] = node->path[i*2 + 0];
 				G.gi.cur[1] = node->path[i*2 + 1];
+
+				printf("DEBUG: x= %d ; y = %d\n", G.gi.cur[0],G.gi.cur[1]);
 
 				gfx_step();
 			}
