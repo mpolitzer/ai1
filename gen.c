@@ -161,14 +161,11 @@ static inline void ga_evolve(void)
 	father1 = v[rand() % 100];
 	father2 = v[rand() % 100];
 	son = v[rand() % 100];
-	ga_assert_element(&_elements[father1], "father1");
-	ga_assert_element(&_elements[father2], "father2");
+
 	recomb(_elements[son].vet,
 			_elements[father1].vet,
 			_elements[father2].vet);
-	ga_assert_element(&_elements[son], "creation");
 	mutation(_elements[son].vet);
-	ga_assert_element(&_elements[son], "mutation");
 	ga_update_cost(&_elements[son]);
 }
 
