@@ -1,4 +1,5 @@
 #include "game.h"
+#include "gen.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -120,8 +121,7 @@ static inline void ga_update_cost(ga_state *state)
 
 	state->cost=0;
 	for (i=0; i < G.gi.num_prizes+1; i++) {
-		int k = _cost[mkcostidx(state->vet[i], state->vet[i+1])];
-		state->cost += _cost[mkcostidx(state->vet[i], state->vet[i+1])];
+		state->cost += graph[mkcostidx(state->vet[i], state->vet[i+1])].cost;
 	}
 	assert(state->cost > 0);
 }

@@ -1,10 +1,10 @@
 CC=gcc
 
 CFLAGS=-Wall -O2 -funroll-loops -c -g
-LDFLAGS=-O2
+LDFLAGS=-O0
 LDLIBS=-lm
 SOURCES=main.c game.c astar.c heap.c gen.c
-HEADERS=game.h astar.h heap.h
+HEADERS=game.h astar.h heap.h gen.h
 
 ifeq ($(ALLEGRO),1)
 SOURCES+=gfx.c

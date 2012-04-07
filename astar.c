@@ -6,6 +6,15 @@
 #include "heap.h"
 #include "game.h"
 
+typedef struct path_cost
+{
+	int pos[2];
+	float cost;
+	float distance;
+	int steps;
+	struct path_cost *next, *prev;
+} PathCost;
+
 int compare_path_cost(const void *a, const void *b)
 {
 	PathCost *A = (PathCost*)a;
@@ -20,7 +29,7 @@ static inline PathCost *create_path_cost(int pos[], int steps, float cost, float
 
 	path->pos[0] = pos[0];
 	path->pos[1] = pos[1];
-	path->cost = steps;
+	path->steps = steps;
 	path->cost = cost;
 	path->distance = distance;
 	path->prev = previous;
@@ -44,14 +53,14 @@ static inline int pos_isvalid(int pos[2], int map_size[2])
 int *a_star_search(int init[2], int goal[2], float *_distance, int *_steps)
 {
 	/* current position variable */
-	PathCost *aux, *curr = create_path_cost(init, 0, 0, 0, NULL);
+	PathCost *curr = create_path_cost(init, 0, 0, 0, NULL);
 
 	/* pointer to map_size */
 	int *map_size = G.gi.map_size, *mapw = G.gi.mapw;
 
 	/* if goal is inside a wall */
 	if (mapw[goal[0] + goal[1] * map_size[0]] < 0) {
-		_distance = -1;
+		*_distance = -1;
 		return NULL;
 	}
 
@@ -67,7 +76,6 @@ int *a_star_search(int init[2], int goal[2], float *_distance, int *_steps)
 
 	/* other variables */
 	int i, map_index;
-	float distance;
 	int *final_path, final_idx;
 
 	while(curr && (curr->pos[0] != goal[0] || curr->pos[1] != goal[1])) {
@@ -91,7 +99,7 @@ int *a_star_search(int init[2], int goal[2], float *_distance, int *_steps)
 				+ 0.5*mapw[curr_index];
 
 			/* final cost = total distance + heuristic value */
-			c = d + manhattan_distance(new_pos, goal);
+			c = d ;//+ manhattan_distance(new_pos, goal);
 
 			/* check if that path cost already exists */
 			if(_map[map_index]) {
@@ -128,23 +136,26 @@ int *a_star_search(int init[2], int goal[2], float *_distance, int *_steps)
 		curr = heap_remove(heap);
 	}
 
-	if(curr) distance = curr->distance;
-	else distance = -1;
+	if(curr) *_distance = curr->distance;
+	else *_distance = -1;
 
 	heap_libera(heap, 0);
 
-	final_idx = curr->steps;
-	final_path = malloc(sizeof(int)*2*(curr->steps+1));
+	if(curr)
+	{
+		final_idx = curr->steps;
+		*_steps = curr->steps+1;
+
+		final_path = malloc(sizeof(int)*2*(curr->steps+1));
+	}
+
+	printf("DEBUG: steps = %d ; final_idx = %d\n", curr->steps, final_idx);
 
 	/* steal the nodes we'll need from _map */
-	for(aux=NULL; curr; curr=curr->prev) {
+	for(; curr; curr=curr->prev) {
 		final_path[2*final_idx + 0] = curr->pos[0];
 		final_path[2*final_idx + 1] = curr->pos[1];
 		final_idx--;
-
-		curr->next = aux;
-		aux = curr;
-		//_map[aux->pos[0] + aux->pos[1] * map_size[0]] = NULL;
 	}
 
 	for(i = 0; i < map_size[0]*map_size[1]; i++) {
@@ -154,6 +165,5 @@ int *a_star_search(int init[2], int goal[2], float *_distance, int *_steps)
 	}
 	free(_map);
 
-	*_distance = distance;
 	return final_path;
 }

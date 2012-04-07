@@ -29,6 +29,14 @@ struct game {
 #endif
 };
 
+typedef struct
+{
+	float cost;
+	int steps;
+	int *path;
+} TSP_Node;
+
+
 #define INF	0x3F3F3F3F
 #define NINF	0xC0C0C0C0
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(*x))
@@ -36,9 +44,7 @@ struct game {
 #define mkcostidx(x,y) ((x) + (y) * (G.gi.num_prizes+2))
 
 extern struct game G;
-extern float *_cost;
-
-int *ga_solve_tsp(int num_iterations, float *cost);
+extern TSP_Node *graph;
 
 void game_read(void);
 void game_print(void);
