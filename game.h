@@ -13,6 +13,7 @@ struct game_info {
 	int cur[2];
 	int *prizes_visited;
 	int num_prizes;
+	int num_prizes_orig;
 	int (*prizes)[2];
 	int map_size[2];
 	int *mapv;	/* map of indexes */

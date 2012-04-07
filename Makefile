@@ -1,6 +1,6 @@
 CC=gcc
 
-CFLAGS=-Wall -O2 -funroll-loops -c -g
+CFLAGS=-Wall -O0 -funroll-loops -c -g
 LDFLAGS=-O0
 LDLIBS=-lm
 SOURCES=main.c game.c astar.c heap.c gen.c

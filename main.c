@@ -75,10 +75,11 @@ void calc_cost_matrix(void)
 	for (i=0; i<G.gi.num_prizes; i++) {
 		if(start_graph[i].cost < 0)
 		{
-			printf("(%d,%d) (%d,%d)\n",
-					G.gi.prizes[i][0], G.gi.prizes[i][1],
-					G.gi.prizes[G.gi.num_prizes-1][0],
-					G.gi.prizes[G.gi.num_prizes-1][1]);
+			/* swap them */
+			TSP_Node tmp = start_graph[i];
+			start_graph[i] = start_graph[G.gi.num_prizes-1];
+			start_graph[G.gi.num_prizes-1] = tmp;
+
 			swap_pos(G.gi.prizes[i], G.gi.prizes[G.gi.num_prizes-1]);
 			G.gi.num_prizes--;
 			i--;
@@ -87,20 +88,17 @@ void calc_cost_matrix(void)
 
 	graph = malloc(sizeof(TSP_Node) * (G.gi.num_prizes+2) * (G.gi.num_prizes+2));
 
-	for (i=j=0; i<bkp_num_prizes; i++) {
-		if(start_graph[i].cost >= 0)
-		{
-			graph[mkcostidx(0, j+1)].path = start_graph[i].path;
-			graph[mkcostidx(j+1, 0)].path = inv_vet(start_graph[i].path, start_graph[i].steps);
+	for (i=j=0; i<G.gi.num_prizes; i++) {
+		graph[mkcostidx(0, j+1)].path = start_graph[i].path;
+		graph[mkcostidx(j+1, 0)].path = inv_vet(start_graph[i].path, start_graph[i].steps);
 
-			graph[mkcostidx(0, j+1)].cost = start_graph[i].cost;
-			graph[mkcostidx(j+1, 0)].cost = start_graph[i].cost;
+		graph[mkcostidx(0, j+1)].cost = start_graph[i].cost;
+		graph[mkcostidx(j+1, 0)].cost = start_graph[i].cost;
 
-			graph[mkcostidx(0, j+1)].steps = start_graph[i].steps;
-			graph[mkcostidx(j+1, 0)].steps = start_graph[i].steps;
+		graph[mkcostidx(0, j+1)].steps = start_graph[i].steps;
+		graph[mkcostidx(j+1, 0)].steps = start_graph[i].steps;
 
-			j++;
-		}
+		j++;
 	}
 	free(start_graph);
 
@@ -123,10 +121,10 @@ void calc_cost_matrix(void)
 			node->path = a_star_search(G.gi.prizes[i], G.gi.end, &node->cost, &node->steps);
 	}
 
-#if 0
+#if 1
 	for (i=0; i<G.gi.num_prizes+2; i++) {
 		for (j=0; j<G.gi.num_prizes+2; j++) {
-			printf("% 7.1f", _cost[mkcostidx(i, j)]);
+			printf("% 7.1f", graph[mkcostidx(i, j)].cost);
 		}
 		printf("\n");
 	}
@@ -146,7 +144,6 @@ int main(int argc, const char *argv[])
 	srand(time(NULL));
 
 	game_read();
-	// print_map();
 	calc_cost_matrix();
 
 #if defined(ALLEGRO)
@@ -154,7 +151,16 @@ int main(int argc, const char *argv[])
 	while (1) {
 		int j=0;
 
-		path = ga_solve_tsp(10000, &distance);
+		if (G.gi.num_prizes != 0) {
+			path = ga_solve_tsp(1000, &distance);
+		} else {
+			TSP_Node *node = &graph[mkcostidx(0, 1)];
+			path = malloc(sizeof(int) * 2);
+			path[0] = 0;
+			path[1] = 1;
+			node->path = a_star_search(G.gi.start, G.gi.end, &node->cost, &node->steps);
+			distance = node->cost;
+		}
 		min = MIN(distance, min);
 
 		for (i = 0; i < G.gi.num_prizes+2; i++) {
@@ -178,6 +184,7 @@ int main(int argc, const char *argv[])
 				G.gi.cur[1] = node->path[i*2 + 1];
 				gfx_step();
 			}
+			gfx_step();
 		}
 	}
 	gfx_end();

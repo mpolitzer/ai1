@@ -76,7 +76,7 @@ void gfx_render(void)
 	}
 
 	/* prizes */
-	for (i=0; i<G.gi.num_prizes; i++) {
+	for (i=0; i<G.gi.num_prizes_orig; i++) {
 		float x = G.gi.prizes[i][0] + 0.5;
 		float y = G.gi.prizes[i][1] + 0.5;
 		char buff[255];

@@ -123,7 +123,7 @@ int *a_star_search(int init[2], int goal[2], float *_distance, int *_steps)
 				PathCost *path;
 
 				/* creating struct path_cost */
-				path = create_path_cost(new_pos, curr->steps+1,c, d, curr);
+				path = create_path_cost(new_pos, curr->steps+1, c, d, curr);
 
 				_map[map_index] = path;
 

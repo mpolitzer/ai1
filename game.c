@@ -13,6 +13,7 @@ void game_read(void)
 	assert(scanf(" %d %d", &G.gi.start[0], &G.gi.start[1]) == 2);
 	assert(scanf(" %d %d", &G.gi.end[0], &G.gi.end[1]) == 2);
 	assert(scanf(" %d", &G.gi.num_prizes) == 1);
+	G.gi.num_prizes_orig = G.gi.num_prizes;
 
 	G.gi.prizes = malloc(sizeof(int) * 2 * G.gi.num_prizes);
 	G.gi.prizes_visited = malloc(sizeof(int) * G.gi.num_prizes);
