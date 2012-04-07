@@ -26,6 +26,8 @@ void gfx_init(int w, int h, int fps)
 		die(1, "can't init allegro\n");
 	if (!(al_init_primitives_addon()))
 		die(1, "can't init primitives addon\n");
+	if (!(al_install_keyboard()))
+		die(1, "can't init keyboard\n");
 	if (!(G.display = al_create_display(w, h)))
 		die(2, "can't create display");
 	if (!(G.ev = al_create_event_queue()))
@@ -39,6 +41,7 @@ void gfx_init(int w, int h, int fps)
 
 	G.w = w;
 	G.h = h;
+	al_register_event_source(G.ev, al_get_keyboard_event_source());
 	al_register_event_source(G.ev, al_get_display_event_source(G.display));
 	al_register_event_source(G.ev, al_get_timer_event_source(G.tick));
 	al_start_timer(G.tick);
@@ -93,8 +96,20 @@ void gfx_render(void)
 
 void gfx_step(void)
 {
+	static int toogle=0;
 	ALLEGRO_EVENT ev;
-	al_wait_for_event(G.ev, &ev);
+
+	do {
+		al_wait_for_event(G.ev, &ev);
+		switch (ev.type) {
+		case ALLEGRO_EVENT_KEY_DOWN:
+			if (toogle ^= 1) al_stop_timer(G.tick);
+			else al_start_timer(G.tick);
+			break;
+		default:
+			break;
+		}
+	} while (ev.type != ALLEGRO_EVENT_TIMER);
 	gfx_render();
 }
 
