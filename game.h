@@ -29,10 +29,16 @@ struct game {
 #endif
 };
 
+#define INF	0x3F3F3F3F
+#define NINF	0xC0C0C0C0
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof(*x))
+
 #define mkcostidx(x,y) ((x) + (y) * (G.gi.num_prizes+2))
 
 extern struct game G;
 extern float *_cost;
+
+int *ga_solve_tsp(int num_iterations, float *cost);
 
 void game_read(void);
 void game_print(void);
