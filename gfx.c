@@ -38,7 +38,7 @@ void gfx_init(int w, int h, int fps)
 	al_init_font_addon();	// initialize the font addon
 	al_init_ttf_addon();	// initialize the ttf (True Type Font) addon
 
-	G.font = al_load_ttf_font("/usr/share/fonts/corefonts/arial.ttf", 10,0 );
+	G.font = al_load_ttf_font("font.ttf", 10,0 );
 	assert(G.font);
 	       
 	/* current position is the begining */
