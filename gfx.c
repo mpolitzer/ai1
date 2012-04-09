@@ -5,6 +5,7 @@
 
 #include "game.h"
 
+#define MOVE_FRAMES	10
 #define die(error, ...) _die(error, __FILE__, __LINE__, __VA_ARGS__)
 #define MIN(x, y) (x < y ? x : y)
 
@@ -32,7 +33,7 @@ void gfx_init(int w, int h, int fps)
 		die(2, "can't create display");
 	if (!(G.ev = al_create_event_queue()))
 		die(3, "can't create event queue");
-	if (!(G.tick = al_create_timer(1.0 / fps)))
+	if (!(G.tick = al_create_timer(1.0 / (fps*MOVE_FRAMES))))
 		die(4, "invalid fps");
 
 	al_init_font_addon();	// initialize the font addon
@@ -53,8 +54,11 @@ void gfx_init(int w, int h, int fps)
 	al_start_timer(G.tick);
 }
 
-void gfx_render(void)
+void gfx_render(int step)
 {
+	static int last[2] = {0.0, 0.0};
+	int i, j, scale = MIN(G.w / G.gi.map_size[0], G.h / G.gi.map_size[1]);
+	float cur[2];
 	ALLEGRO_COLOR colors[] = {
 		al_map_rgb(  0,  0,  0),	/* x */
 		al_map_rgb(  0,200,  0),	/* p */
@@ -62,9 +66,8 @@ void gfx_render(void)
 		al_map_rgb(  0,100,  0),	/* a */
 		al_map_rgb(  0, 50,  0),	/* s */
 	};
-	int i, j, scale = MIN(G.w / G.gi.map_size[0], G.h / G.gi.map_size[1]);
-	al_clear_to_color(al_map_rgb(0,0,0));
 
+	al_clear_to_color(al_map_rgb(0,0,0));
 	/* tiles */
 	for (i=0; i<G.gi.map_size[0]; i++) {
 		for (j=0; j<G.gi.map_size[1]; j++) {
@@ -105,30 +108,42 @@ void gfx_render(void)
 	al_draw_filled_circle((float)scale * (G.gi.end[0]+0.5),
 	                      (float)scale * (G.gi.end[1]+0.5), scale/3,
 	                      al_map_rgb(255, 0, 0));
+
+	if (step == MOVE_FRAMES-1) {
+		last[0] = G.gi.cur[0];
+		last[1] = G.gi.cur[1];
+	}
+
+	cur[0] = last[0] + (step * ((float)G.gi.cur[0]-last[0]))/MOVE_FRAMES;
+	cur[1] = last[1] + (step * ((float)G.gi.cur[1]-last[1]))/MOVE_FRAMES;
+
 	/* player */
-	al_draw_filled_circle((float)scale * (G.gi.cur[0]+0.5),
-	                      (float)scale * (G.gi.cur[1]+0.5), scale/3,
+	al_draw_filled_circle((float)scale * (cur[0]+0.5),
+	                      (float)scale * (cur[1]+0.5), scale/3,
 	                      al_map_rgb(0, 0, 255));
 	al_flip_display();
 }
 
 void gfx_step(void)
 {
+	int i;
 	static int toogle=0;
 	ALLEGRO_EVENT ev;
 
-	do {
-		al_wait_for_event(G.ev, &ev);
-		switch (ev.type) {
-		case ALLEGRO_EVENT_KEY_DOWN:
-			if (toogle ^= 1) al_stop_timer(G.tick);
-			else al_start_timer(G.tick);
-			break;
-		default:
-			break;
-		}
-	} while (ev.type != ALLEGRO_EVENT_TIMER);
-	gfx_render();
+	for (i = 0; i < MOVE_FRAMES; i++) {
+		do {
+			al_wait_for_event(G.ev, &ev);
+			switch (ev.type) {
+			case ALLEGRO_EVENT_KEY_DOWN:
+				if (toogle ^= 1) al_stop_timer(G.tick);
+				else al_start_timer(G.tick);
+				break;
+			default:
+				break;
+			}
+		} while (ev.type != ALLEGRO_EVENT_TIMER);
+		gfx_render(i);
+	}
 }
 
 void gfx_end(void)
