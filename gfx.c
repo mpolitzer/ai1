@@ -94,7 +94,7 @@ void gfx_render(void)
 					1.0);
 		sprintf(buff, "%d", i+1);
 		al_draw_text(G.font, al_map_rgb(0,0,0),
-				scale*x, scale*y, ALLEGRO_ALIGN_CENTRE, buff);
+				scale*x, scale*(y-0.1), ALLEGRO_ALIGN_CENTRE, buff);
 	}
 
 	/* start */

@@ -1,1 +1,1 @@
-make clean && make ALLEGRO=1 && ./main <in.txt
+make clean ALLEGRO=1 && make ALLEGRO=1 && ./main <in.txt

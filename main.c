@@ -147,7 +147,7 @@ int main(int argc, const char *argv[])
 	calc_cost_matrix();
 
 #if defined(ALLEGRO)
-	gfx_init(600, 600, 5);
+	gfx_init(600, 600, 10);
 	while (1) {
 		int j=0;
 
