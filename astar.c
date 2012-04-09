@@ -136,8 +136,12 @@ int *a_star_search(int init[2], int goal[2], float *_distance, int *_steps)
 		curr = heap_remove(heap);
 	}
 
-	if(curr) *_distance = curr->distance;
-	else *_distance = -1;
+	if(curr) {
+		*_distance = curr->distance;
+	} else {
+		*_distance = -1;
+		*_steps = 0;
+	}
 
 	heap_libera(heap, 0);
 
